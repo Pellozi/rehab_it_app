@@ -14,7 +14,7 @@ class PhysicalPage extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(vertical: 10.w),
             decoration: BoxDecoration(
-              color: RehabColors().mainColor.withOpacity(0.5),
+              color: RehabColors().mainColor.withOpacity(0.2),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(

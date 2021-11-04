@@ -15,7 +15,7 @@ class PostOperativePage extends StatefulWidget {
 }
 
 class _PostOperativePageState extends State<PostOperativePage> {
-  List<String> labels = ["Gerais", "Medicação", "Físico", "Alimentação"];
+  List<String> labels = ["Gerais", "Medicação", "Atividade física", "Alimentação"];
   PageController _pageController;
   var toggleIndex = 0;
   @override
@@ -28,17 +28,23 @@ class _PostOperativePageState extends State<PostOperativePage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ToggleBar(
-          selectedTabColor: Colors.white,
-          backgroundColor: RehabColors().mainColor.withOpacity(0.9),
-          selectedTextColor: RehabColors().mainColor,
-          textColor: Colors.white,
-          labelTextStyle: TextStyle(color: Colors.black, fontSize: 12.4.w),
-          labels: labels,
-          onSelectionUpdated: (index) {
-            toggleIndex = index;
-            _pageController.jumpToPage(index);
-          },
+        Container(
+          height: 75.w,
+          child: ToggleBar(
+            selectedTabColor: Colors.white,
+            backgroundColor: RehabColors().mainColor.withOpacity(0.9),
+            selectedTextColor: RehabColors().mainColor,
+            textColor: Colors.white,
+            labelTextStyle: TextStyle(
+              color: Colors.black,
+              fontSize: 11.w,
+            ),
+            labels: labels,
+            onSelectionUpdated: (index) {
+              toggleIndex = index;
+              _pageController.jumpToPage(index);
+            },
+          ),
         ),
         Expanded(
           child: PageView(

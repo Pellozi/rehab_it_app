@@ -48,7 +48,7 @@ class _DashboardPageState extends State<DashboardPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  'Você não está se sentindo bem?',
+                  'Não está se sentindo bem?',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20.w,
@@ -56,7 +56,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                 ),
                 Text(
-                  'Se você se sentir mal com algum sintoma adverso, ligue ou envie uma mensagem de texto imediatamente para obter ajuda',
+                  'Caso esteja sentindo dor ou desconforto no peito, busque ajuda. ',
                   style: TextStyle(
                     color: Colors.white70,
                     fontSize: 15.0,

@@ -11,6 +11,7 @@ class CheckInPage extends StatefulWidget {
 
 class _CheckInPageState extends State<CheckInPage> {
   double _slider = 0;
+  String _sliderLabel = '0';
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -92,7 +93,7 @@ class _CheckInPageState extends State<CheckInPage> {
             onTap: () {
               Alert(
                   context: context,
-                  title: "Insira seus batimentos abaixo",
+                  title: "Insira seus sinais vitais abaixo",
                   style: AlertStyle(
                       titleTextAlign: TextAlign.center,
                       titleStyle: TextStyle(color: Colors.black54, fontSize: 18.w),
@@ -106,7 +107,25 @@ class _CheckInPageState extends State<CheckInPage> {
                       TextField(
                         decoration: InputDecoration(
                           icon: Icon(Icons.favorite_outline_rounded),
-                          labelText: 'Pressão',
+                          labelText: 'Frequência Cardíaca',
+                        ),
+                      ),
+                      TextField(
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.favorite_outline_rounded),
+                          labelText: 'Pressão Arterial',
+                        ),
+                      ),
+                      TextField(
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.wysiwyg_outlined),
+                          labelText: 'Temperatura',
+                        ),
+                      ),
+                      TextField(
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.wysiwyg_outlined),
+                          labelText: 'Saturação',
                         ),
                       ),
                     ],
@@ -137,7 +156,7 @@ class _CheckInPageState extends State<CheckInPage> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Realizar checkin batimentos',
+                      'Realizar checkin sinais vitais',
                       style: TextStyle(color: Colors.black38, fontSize: 14.w, fontWeight: FontWeight.w500),
                     ),
                   ),
@@ -235,47 +254,45 @@ class _CheckInPageState extends State<CheckInPage> {
                       titleTextAlign: TextAlign.center,
                       titleStyle: TextStyle(color: Colors.black54, fontSize: 18.w),
                       buttonAreaPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.w)),
-                  content: Column(
-                    children: <Widget>[
-                      Text(
-                        '07/05/2021 as 14:00',
-                        style: TextStyle(color: Colors.black38, fontSize: 14.w),
-                      ),
-                      TextField(
-                        decoration: InputDecoration(
-                          icon: Icon(Icons.event_note_sharp),
-                          labelText: 'observações',
+                  content: StatefulBuilder(builder: (context, state) {
+                    return Column(
+                      children: <Widget>[
+                        Text(
+                          '07/05/2021 as 14:00',
+                          style: TextStyle(color: Colors.black38, fontSize: 14.w),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 10.w, top: 30.w),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Flexible(
-                              child: Text(
-                                'De 1 a 10 como está se sentindo: ',
-                                style: TextStyle(color: Colors.black54, fontSize: 12.w, fontWeight: FontWeight.w500),
+                        TextField(
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.event_note_sharp),
+                            labelText: 'observações',
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 10.w, top: 30.w),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Flexible(
+                                child: Text(
+                                  'De 1 a 10 como está se sentindo: ',
+                                  style: TextStyle(color: Colors.black54, fontSize: 12.w, fontWeight: FontWeight.w500),
+                                ),
                               ),
-                            ),
-                            StatefulBuilder(builder: (context, snapshot) {
-                              return Padding(
+                              Padding(
                                 padding: EdgeInsets.only(left: 5.w),
                                 child: Text(
-                                  _slider.toStringAsFixed(0),
+                                  _sliderLabel,
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       color: RehabColors().mainColor, fontSize: 12.w, fontWeight: FontWeight.w600),
                                 ),
-                              );
-                            }),
-                          ],
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      Container(
-                        width: 290.w,
-                        child: StatefulBuilder(
-                          builder: (context, state) => CupertinoSlider(
+                        Container(
+                          width: 290.w,
+                          child: CupertinoSlider(
                             activeColor: RehabColors().mainColor.withOpacity(0.88),
                             max: 10,
                             min: 0,
@@ -283,14 +300,17 @@ class _CheckInPageState extends State<CheckInPage> {
                             value: _slider,
                             onChanged: (val) {
                               state(() {
-                                _slider = val;
+                                setState(() {
+                                  _slider = val;
+                                  _sliderLabel = val.toStringAsFixed(0);
+                                });
                               });
                             },
                           ),
                         ),
-                      )
-                    ],
-                  ),
+                      ],
+                    );
+                  }),
                   buttons: [
                     DialogButton(
                       onPressed: () => Navigator.pop(context),
