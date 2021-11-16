@@ -1,28 +1,34 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rehab_it/ui/controller/doctor_controller.dart';
+import 'package:rehab_it/ui/standard_widgets/rehab_obx_widget.dart';
 import 'package:rehab_it/utils/screen_util/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:rehab_it/ui/chat/chat_conversation_page.dart';
 
 class ChatPage extends StatelessWidget {
+  final DoctorController doctorController = Get.put(DoctorController());
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 30.w),
-      child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: 4,
-          itemBuilder: (BuildContext context, int index) {
-            return InkWell(
-                onTap: () {
-                  Get.to(ChatConversationPage(), transition: Transition.rightToLeft);
-                },
-                child: chatLisItem(index));
-          }),
-    );
+    return RehabObxWidget(
+        doctorController,
+        Padding(
+          padding: EdgeInsets.only(top: 30.w),
+          child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: doctorController.listDoctors.length,
+              itemBuilder: (BuildContext context, int index) {
+                return InkWell(
+                    onTap: () {
+                      Get.to(ChatConversationPage(doctorController.listDoctors[index]),
+                          transition: Transition.rightToLeft);
+                    },
+                    child: chatLisItem(doctorController.listDoctors[index]));
+              }),
+        ));
   }
 
-  Widget chatLisItem(int index) {
+  Widget chatLisItem(DoctorModel model) {
     return Container(
       margin: EdgeInsets.only(left: 15.w, right: 15.w, bottom: 10.w),
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10.r), boxShadow: [
@@ -47,53 +53,29 @@ class ChatPage extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (index == 0) ...[
-                Text(
-                  'Educador físico',
-                  style: TextStyle(color: Colors.black54, fontSize: 18.w, fontWeight: FontWeight.w500),
-                ),
-                SizedBox(
-                  height: 5.w,
-                ),
-                Text(
-                  'Marcelo',
-                  style: TextStyle(color: Colors.black38, fontSize: 16.w, fontWeight: FontWeight.w400),
-                ),
-              ],
-              if (index == 1) ...[
-                Text(
-                  'Nutricionista',
-                  style: TextStyle(color: Colors.black54, fontSize: 18.w, fontWeight: FontWeight.w500),
-                ),
-                SizedBox(
-                  height: 5.w,
-                ),
-                Text('Amanda', style: TextStyle(color: Colors.black38, fontSize: 16.w, fontWeight: FontWeight.w400)),
-              ],
-              if (index == 2) ...[
-                Text(
-                  'Médico',
-                  style: TextStyle(color: Colors.black54, fontSize: 18.w, fontWeight: FontWeight.w500),
-                ),
-                SizedBox(
-                  height: 5.w,
-                ),
-                Text('João', style: TextStyle(color: Colors.black38, fontSize: 16.w, fontWeight: FontWeight.w400)),
-              ],
-              if (index == 3) ...[
-                Text(
-                  'Enfermeira',
-                  style: TextStyle(color: Colors.black54, fontSize: 18.w, fontWeight: FontWeight.w500),
-                ),
-                SizedBox(
-                  height: 5.w,
-                ),
-                Text('Ana', style: TextStyle(color: Colors.black38, fontSize: 16.w, fontWeight: FontWeight.w400)),
-              ],
+              Text(
+                tpEspecialista(model.tpEspecialista),
+                style: TextStyle(color: Colors.black54, fontSize: 18.w, fontWeight: FontWeight.w500),
+              ),
+              SizedBox(
+                height: 5.w,
+              ),
+              Text(
+                model.nome,
+                style: TextStyle(color: Colors.black38, fontSize: 16.w, fontWeight: FontWeight.w400),
+              ),
             ],
           ),
         ],
       ),
     );
+  }
+
+  String tpEspecialista(String tp) {
+    if (tp == 'edFisico') return 'Educador físico';
+    if (tp == 'medico ') return 'Médico';
+    if (tp == 'enfermeiro ') return 'Enfermeiro';
+    if (tp == 'nutricionista ') return 'Nutricionista';
+    return 'Médico';
   }
 }

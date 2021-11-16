@@ -48,60 +48,60 @@ class StandardAppBarWidget extends StatelessWidget implements PreferredSizeWidge
           },
         ),
         actions: [
-          Container(
-            height: 25.w,
-            width: 29.w,
-            margin: EdgeInsets.only(right: 20.w),
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.notifications_none_rounded,
-                      size: 24.w,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      Alert(
-                          context: context,
-                          title: "Noticações",
-                          style: AlertStyle(
-                              titleTextAlign: TextAlign.center,
-                              titleStyle: TextStyle(color: Colors.black54, fontSize: 18.w),
-                              buttonAreaPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.w)),
-                          desc: 'Novos cuidados foram cadastrados',
-                          buttons: [
-                            DialogButton(
-                              onPressed: () {
-                                Get.back();
-                                Get.to(Scaffold(
-                                    appBar: StandardAppBarWidget(
-                                      hasBackButton: true,
-                                    ),
-                                    body: PostOperativePage()));
-                              },
-                              child: Text(
-                                "Ver cuidados",
-                                style: TextStyle(color: Colors.white, fontSize: 16.w),
-                              ),
-                              color: RehabColors().mainColor,
-                            )
-                          ]).show();
-                    },
-                  ),
-                ),
-                Positioned(
-                  top: 15,
-                  right: 1,
-                  child: Container(
-                    height: 8.w,
-                    width: 8.w,
-                    decoration: BoxDecoration(color: RehabColors().cautionColor, shape: BoxShape.circle),
-                  ),
-                )
-              ],
-            ),
-          ),
+//          Container(
+//            height: 25.w,
+//            width: 29.w,
+//            margin: EdgeInsets.only(right: 20.w),
+//            child: Stack(
+//              children: [
+//                Positioned.fill(
+//                  child: IconButton(
+//                    icon: Icon(
+//                      Icons.notifications_none_rounded,
+//                      size: 24.w,
+//                      color: Colors.white,
+//                    ),
+//                    onPressed: () {
+//                      Alert(
+//                          context: context,
+//                          title: "Noticações",
+//                          style: AlertStyle(
+//                              titleTextAlign: TextAlign.center,
+//                              titleStyle: TextStyle(color: Colors.black54, fontSize: 18.w),
+//                              buttonAreaPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.w)),
+//                          desc: 'Novos cuidados foram cadastrados',
+//                          buttons: [
+//                            DialogButton(
+//                              onPressed: () {
+//                                Get.back();
+//                                Get.to(Scaffold(
+//                                    appBar: StandardAppBarWidget(
+//                                      hasBackButton: true,
+//                                    ),
+//                                    body: PostOperativePage()));
+//                              },
+//                              child: Text(
+//                                "Ver cuidados",
+//                                style: TextStyle(color: Colors.white, fontSize: 16.w),
+//                              ),
+//                              color: RehabColors().mainColor,
+//                            )
+//                          ]).show();
+//                    },
+//                  ),
+//                ),
+//                Positioned(
+//                  top: 15,
+//                  right: 1,
+//                  child: Container(
+//                    height: 8.w,
+//                    width: 8.w,
+//                    decoration: BoxDecoration(color: RehabColors().cautionColor, shape: BoxShape.circle),
+//                  ),
+//                )
+//              ],
+//            ),
+//          ),
         ],
       ),
     );

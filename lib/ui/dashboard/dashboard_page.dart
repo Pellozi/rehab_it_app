@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:rehab_it/ui/controller/auth_controller.dart';
+import 'package:rehab_it/ui/controller/chat_controller.dart';
+import 'package:rehab_it/ui/controller/checkin_controller.dart';
+import 'package:rehab_it/ui/model/chat.dart';
+import 'package:rehab_it/utils/date_formatter.dart';
 import 'package:rehab_it/utils/screen_util/flutter_screenutil.dart';
 import 'package:rehab_it/utils/colors.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 import 'dashboard_chart_widget.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class DashboardPage extends StatefulWidget {
   @override
@@ -12,16 +20,68 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  final AuthController authController = Get.find();
+  final ChatController chatController = Get.put(ChatController());
+  final CheckInController checkInController = Get.put(CheckInController());
+  final TextEditingController textEditingController = TextEditingController(text: '');
+
+  @override
+  void initState() {
+    init();
+    initializeDateFormatting("pt_BR", null);
+    timeago.setLocaleMessages('pt_br_short', PtBrShortMessagesModified());
+    super.initState();
+  }
+
+  Future<void> init() async {
+    await checkInController.getIncidents(authController.patient.value.cpf);
+    await checkInController.getIMonitoring(authController.patient.value.cpf);
+  }
+
+  List<DateTime> getDatesAsList() {
+    List<DateTime> result = new List();
+    checkInController.monitoring.forEach((exerciseHistory) {
+      result.add(DateTime.parse(exerciseHistory.data));
+    });
+    return result;
+  }
+
+  List<double> getPressaoAsList() {
+    List<double> result = new List();
+    checkInController.monitoring.forEach((exerciseHistory) {
+      result.add(double.tryParse(exerciseHistory.pressao));
+    });
+    return result;
+  }
+
+  List<double> getBemAsList() {
+    List<double> result = new List();
+    checkInController.monitoring.forEach((exerciseHistory) {
+      result.add(double.tryParse(exerciseHistory.temperatura));
+    });
+    return result;
+  }
+
+  List<double> getGlicemiaAsList() {
+    List<double> result = new List();
+    checkInController.monitoring.forEach((exerciseHistory) {
+      result.add(double.tryParse(exerciseHistory.freqCardiacaPre));
+    });
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
         Expanded(
-          child: Stack(
-            fit: StackFit.expand,
-            children: [_buildHeader(), _buildCardHeader(), _buildBody()],
+          child: Obx(
+            () => Stack(
+              fit: StackFit.expand,
+              children: [_buildHeader(), _buildCardHeader(), if (checkInController.monitoring.length > 0) _buildBody()],
+            ),
           ),
-        ),
+        )
       ],
     );
   }
@@ -114,10 +174,11 @@ class _DashboardPageState extends State<DashboardPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  '07/05/2021 as 14:00',
+                                  dateTimeAsStringNumeric(DateTime.now()),
                                   style: TextStyle(color: Colors.black38, fontSize: 14.w),
                                 ),
                                 TextField(
+                                  controller: textEditingController,
                                   maxLines: 3,
                                   decoration: InputDecoration(
                                     icon: Icon(Icons.medical_services_outlined),
@@ -128,7 +189,19 @@ class _DashboardPageState extends State<DashboardPage> {
                             ),
                             buttons: [
                               DialogButton(
-                                onPressed: () => Navigator.pop(context),
+                                onPressed: () async {
+                                  Get.back();
+                                  await chatController.sendMessage(Chat((b) => b
+                                    ..especialistaCpf = 'admin'
+                                    ..pacienteCpf = authController.patient.value.cpf
+                                    ..mensagem = textEditingController.text
+                                    ..destinatario = authController.patient.value.cpf
+                                    ..remetente = authController.patient.value.cpf
+                                    ..visualizado = false));
+                                  if (chatController.status.isSuccess) {
+                                    FocusScope.of(context).requestFocus(new FocusNode());
+                                  }
+                                },
                                 child: Text(
                                   "Enviar",
                                   style: TextStyle(color: Colors.white, fontSize: 16.w),
@@ -185,43 +258,51 @@ class _DashboardPageState extends State<DashboardPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    'Cirurgia no coração',
-                    style: TextStyle(color: Colors.black54, fontSize: 20.w, fontWeight: FontWeight.w500),
-                  ),
+                  Obx(() => Text(
+                        authController.patient.value.tratamento ?? '',
+                        style: TextStyle(color: Colors.black54, fontSize: 20.w, fontWeight: FontWeight.w500),
+                      )),
                   SizedBox(height: 10.w),
                   Row(
                     children: [
                       Text(
-                        'Medico:',
+                        'Responsaável:',
                         style: TextStyle(color: Colors.black38, fontSize: 14.w, fontWeight: FontWeight.w500),
                       ),
                       SizedBox(width: 6.w),
-                      Text(
-                        'João',
-                        style: TextStyle(color: Colors.black38, fontSize: 13.w, fontWeight: FontWeight.w400),
-                      ),
+                      Obx(() => Text(
+                            authController.patient.value.nomeEspecialista ?? '',
+                            style: TextStyle(color: Colors.black38, fontSize: 13.w, fontWeight: FontWeight.w400),
+                          )),
                     ],
                   ),
                   SizedBox(height: 10.w),
-                  Row(
-                    children: [
-                      Text(
-                        'Realizada:',
+                  Obx(() => Row(
+                        children: [
+                          Text(
+                            'Entrada:',
+                            style: TextStyle(color: Colors.black38, fontSize: 14.w, fontWeight: FontWeight.w500),
+                          ),
+                          SizedBox(width: 6.w),
+                          if (authController.patient.value.dtInicio != null &&
+                              authController.patient.value.dtInicio.isNotEmpty)
+                            Obx(() => Text(
+                                  dateAsStringLongMonth(DateTime.tryParse(authController.patient.value.dtInicio)),
+                                  style: TextStyle(color: Colors.black38, fontSize: 13.w, fontWeight: FontWeight.w400),
+                                )),
+                          if (authController.patient.value.dtInicio == null ||
+                              authController.patient.value.dtInicio.isEmpty)
+                            Text(
+                              dateAsStringLongMonth(DateTime.now()),
+                              style: TextStyle(color: Colors.black38, fontSize: 13.w, fontWeight: FontWeight.w400),
+                            )
+                        ],
+                      )),
+                  SizedBox(height: 10.w),
+                  Obx(() => Text(
+                        '${authController.patient.value.nrDias} dias de recuperação',
                         style: TextStyle(color: Colors.black38, fontSize: 14.w, fontWeight: FontWeight.w500),
-                      ),
-                      SizedBox(width: 6.w),
-                      Text(
-                        'Segunda-feira, 10 de junho 2021',
-                        style: TextStyle(color: Colors.black38, fontSize: 13.w, fontWeight: FontWeight.w400),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10.w),
-                  Text(
-                    '15 dias de recuperação',
-                    style: TextStyle(color: Colors.black38, fontSize: 14.w, fontWeight: FontWeight.w500),
-                  ),
+                      )),
                 ],
               )
             ],
@@ -243,23 +324,11 @@ class _DashboardPageState extends State<DashboardPage> {
                 padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 60.w),
                 child: Container(
                   height: 180.w,
-                  child: DashboardChartWidget(values: [
-                    [5, 12, 3],
-                    [100, 110, 250],
-                    [3, 7, 10]
-                  ], colors: [
-                    Colors.blue,
-                    Colors.red,
-                    Colors.lightGreenAccent
-                  ], dates: [
-                    DateTime.now(),
-                    DateTime.now(),
-                    DateTime.now()
-                  ], titles: [
-                    "pressão",
-                    "glicose",
-                    "bem-estar"
-                  ]),
+                  child: DashboardChartWidget(
+                      values: [getPressaoAsList(), getBemAsList(), getGlicemiaAsList()],
+                      colors: [Colors.blue, Colors.red, Colors.lightGreenAccent],
+                      dates: getDatesAsList(),
+                      titles: ["Batimentos", "Temperatura", "Saturação"]),
                 ),
               ),
             ),

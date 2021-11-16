@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:rehab_it/ui/login/login_auth_page.dart';
 import 'package:rehab_it/utils/screen_util/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:rehab_it/ui/home_page.dart';
-import 'package:rehab_it/ui/login/login_page.dart';
 import 'package:rehab_it/utils/colors.dart';
 
 void main() {
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home: ScreenUtilInit(
           designSize: Size(375, 812),
-          builder: () => EmailStepBody(),
+          builder: () => PasswordStepBody(),
         ));
   }
 }
