@@ -73,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           TextField(
                             decoration: InputDecoration(
                               icon: Icon(Icons.height),
-                              labelText: 'Altura',
+                              labelText: 'Altura(m)',
                             ),
                             controller: textEditingHeightController,
                           ),
@@ -90,7 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ? textEditingNameController.text
                                   : authController.patient.value.nome
                               ..altura = textEditingHeightController.text.isNotEmpty
-                                  ? textEditingHeightController.text
+                                  ? double.tryParse(textEditingHeightController.text)
                                   : authController.patient.value.altura
                               ..evento = authController.patient.value.evento
                               ..tratamento = authController.patient.value.tratamento

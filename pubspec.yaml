@@ -43,6 +43,7 @@ dependencies:
   date_format: ^2.0.2
   intl: any
   timeago: ^3.0.2
+  url_launcher: ^6.0.13
 
 dev_dependencies:
   flutter_test:

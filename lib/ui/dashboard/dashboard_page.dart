@@ -11,7 +11,6 @@ import 'package:rehab_it/utils/date_formatter.dart';
 import 'package:rehab_it/utils/screen_util/flutter_screenutil.dart';
 import 'package:rehab_it/utils/colors.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
 import 'dashboard_chart_widget.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -274,7 +273,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   Row(
                     children: [
                       Text(
-                        'Responsaável:',
+                        'Responsável:',
                         style: TextStyle(color: Colors.black38, fontSize: 14.w, fontWeight: FontWeight.w500),
                       ),
                       SizedBox(width: 6.w),
@@ -336,7 +335,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       values: [getPressaoAsList(), getBemAsList(), getGlicemiaAsList()],
                       colors: [Colors.blue, Colors.red, Colors.lightGreenAccent],
                       dates: getDatesAsList(),
-                      titles: ["Batimentos", "Temperatura", "Saturação"]),
+                      titles: ["Pressão arterial", "Temperatura", "Saturação"]),
                 ),
               ),
             ),

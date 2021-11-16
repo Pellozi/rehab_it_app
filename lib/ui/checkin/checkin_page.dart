@@ -29,13 +29,7 @@ class _CheckInPageState extends State<CheckInPage> {
   final AuthController authController = Get.find();
   @override
   void initState() {
-    init();
     super.initState();
-  }
-
-  Future<void> init() async {
-    await checkInController.getIncidents(authController.patient.value.cpf);
-    await checkInController.getIMonitoring(authController.patient.value.cpf);
   }
 
   @override
@@ -178,7 +172,8 @@ class _CheckInPageState extends State<CheckInPage> {
                         DialogButton(
                           onPressed: () async {
                             await checkInController.addMonitoring(Monitoring((b) => b
-                              ..seq = checkInController.monitoring[0].seq
+                              ..seq =
+                                  checkInController.monitoring.length == 0 ? null : checkInController.monitoring[0].seq
                               ..cpf = authController.patient.value.cpf
                               ..freqCardiacaPre = textEditingFrequencyController.text
                               ..temperatura = textEditingWeatherController.text
@@ -265,7 +260,8 @@ class _CheckInPageState extends State<CheckInPage> {
                         DialogButton(
                           onPressed: () async {
                             await checkInController.addMonitoring(Monitoring((b) => b
-                              ..seq = checkInController.monitoring[0].seq
+                              ..seq =
+                                  checkInController.monitoring.length == 0 ? null : checkInController.monitoring[0].seq
                               ..cpf = authController.patient.value.cpf
                               ..freqCardiacaPre = textEditingFrequencyController.text
                               ..temperatura = textEditingWeatherController.text
@@ -274,6 +270,7 @@ class _CheckInPageState extends State<CheckInPage> {
                               ..glicemia = textEditingGlicemiaController.text
                               ..bemEstar = int.tryParse(_sliderLabel)
                               ..pressao = textEditingPressureController.text));
+                            await checkInController.getIMonitoring(authController.patient.value.cpf);
                             if (checkInController.status.isSuccess) {
                               FocusScope.of(context).requestFocus(new FocusNode());
                               Get.back();
@@ -394,7 +391,8 @@ class _CheckInPageState extends State<CheckInPage> {
                         DialogButton(
                           onPressed: () async {
                             await checkInController.addMonitoring(Monitoring((b) => b
-                              ..seq = checkInController.monitoring[0].seq
+                              ..seq =
+                                  checkInController.monitoring.length == 0 ? null : checkInController.monitoring[0].seq
                               ..cpf = authController.patient.value.cpf
                               ..freqCardiacaPre = textEditingFrequencyController.text
                               ..temperatura = textEditingWeatherController.text
@@ -561,7 +559,7 @@ class _CheckInPageState extends State<CheckInPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Batimentos - ${model.pressao}',
+                'Pressão arterial - ${model.pressao}',
                 style: TextStyle(color: Colors.black54, fontSize: 14.w, fontWeight: FontWeight.w500),
               ),
               SizedBox(
