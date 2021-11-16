@@ -6,6 +6,7 @@ import 'package:rehab_it/ui/controller/auth_controller.dart';
 import 'package:rehab_it/ui/controller/chat_controller.dart';
 import 'package:rehab_it/ui/controller/checkin_controller.dart';
 import 'package:rehab_it/ui/model/chat.dart';
+import 'package:rehab_it/ui/standard_widgets/rehab_obx_widget.dart';
 import 'package:rehab_it/utils/date_formatter.dart';
 import 'package:rehab_it/utils/screen_util/flutter_screenutil.dart';
 import 'package:rehab_it/utils/colors.dart';
@@ -35,13 +36,14 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Future<void> init() async {
     await checkInController.getIncidents(authController.patient.value.cpf);
+    await checkInController.getIncidents(authController.patient.value.cpf);
     await checkInController.getIMonitoring(authController.patient.value.cpf);
   }
 
   List<DateTime> getDatesAsList() {
     List<DateTime> result = new List();
     checkInController.monitoring.forEach((exerciseHistory) {
-      result.add(DateTime.parse(exerciseHistory.data));
+      result.add(DateTime.tryParse(exerciseHistory.data));
     });
     return result;
   }
@@ -72,18 +74,24 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: Obx(
-            () => Stack(
-              fit: StackFit.expand,
-              children: [_buildHeader(), _buildCardHeader(), if (checkInController.monitoring.length > 0) _buildBody()],
-            ),
-          ),
-        )
-      ],
-    );
+    return RehabObxWidget(
+        checkInController,
+        Column(
+          children: <Widget>[
+            Expanded(
+              child: Obx(
+                () => Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    _buildHeader(),
+                    _buildCardHeader(),
+                    if (checkInController.monitoring.length > 0) _buildBody()
+                  ],
+                ),
+              ),
+            )
+          ],
+        ));
   }
 
   Widget _buildHeader() {

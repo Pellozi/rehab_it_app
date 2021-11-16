@@ -23,7 +23,7 @@ class ChatConversationPage extends StatefulWidget {
 class _ChatConversationPageState extends State<ChatConversationPage> {
   TextEditingController _textEditingController = new TextEditingController();
   ScrollController _controller = ScrollController();
-  final ChatController chatController = Get.put(ChatController());
+  final ChatController chatController = Get.find();
   final AuthController authController = Get.find();
   @override
   void initState() {
@@ -63,13 +63,13 @@ class _ChatConversationPageState extends State<ChatConversationPage> {
                               Flexible(
                                   child: Padding(
                                 padding: EdgeInsets.symmetric(vertical: 10.w, horizontal: 20.w),
-                                child: ListView.builder(
+                                child: Obx(() => ListView.builder(
                                     controller: _controller,
                                     shrinkWrap: true,
                                     itemCount: chatController.chats.length,
                                     itemBuilder: (BuildContext context, int index) {
                                       return InkWell(onTap: () {}, child: Bubble(chat: chatController.chats[index]));
-                                    }),
+                                    })),
                               )),
                             ],
                           ),
